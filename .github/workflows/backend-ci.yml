@@ -10,7 +10,6 @@ on:
     
   # Automatic trigger on pull request events targeting the main branch
   pull_request:
-    types: [opened, reopened, synchronize]
     branches: [main]
     paths: 
       - starter/backend
