@@ -14,7 +14,7 @@ on:
         default: '3.10'
       working-directory:
         description: 'Working directory'
-        required: true
+        required: false
         type: string
         default: 'starter/backend'
 

@@ -10,6 +10,10 @@ on:
       - starter/frontend/**
   
   workflow_dispatch:
+    
+env: 
+  working-directory: 'starter/frontend'
+      
   
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.head_ref || github.ref }}'
@@ -17,7 +21,7 @@ concurrency:
 
 jobs:
   lint_and_test:
-    uses: ./.github/workflows/frontend-lint-test.yaml
+    uses: ./.github/workflows/frontend-lint-test.yml
       
   build:
     needs: lint_and_test
@@ -25,7 +29,7 @@ jobs:
     defaults:
       run: 
         shell: bash
-        working-directory: 'starter/frontend'
+        working-directory: ${{ env.working-directory }}
     steps:
       # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository
@@ -49,8 +53,8 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ steps.setup-aws-credentials.outputs.aws-account-id}}
           REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          REGISTRY_ALIAS: ecr-uda-movie-app-fe-alias
-          REPOSITORY: ecr-uda-movie-app-fe
+          REGISTRY_ALIAS: ${{ secrets.REPOSITORY_FE }}-alias
+          REPOSITORY: ${{ secrets.REPOSITORY_FE }}
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
@@ -70,7 +74,7 @@ jobs:
     defaults:
       run: 
         shell: bash
-        working-directory: 'starter/frontend'
+        working-directory: ${{ env.working-directory }}
     steps:
       # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository

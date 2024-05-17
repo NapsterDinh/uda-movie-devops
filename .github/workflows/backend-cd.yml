@@ -21,22 +21,27 @@ concurrency:
   cancel-in-progress: true    
   
 jobs:
+  lint_and_test:
+    uses: ./.github/workflows/backend-lint-test.yml
+    
   build:
+    needs: lint_and_test
     runs-on: ubuntu-latest
     defaults:
       run: 
         shell: bash
         working-directory: ${{ env.working-directory }}
     steps:
-      - name: Lint and test
-        uses: ./.github/workflows/backend-lint-test.yml
-        with:
-          python-version: ${{ env.python-version }}
-          working-directory: ${{ env.working-directory }}
-          
       # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository
         uses: actions/checkout@v4 
+        
+      - name: Setup AWS Credentials
+        id: setup-aws-credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-region: ${{ secrets.AWS_REGION }}
         
       - name: Login to Amazon ECR
         id: login-ecr
@@ -49,8 +54,8 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ steps.setup-aws-credentials.outputs.aws-account-id}}
           REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          REGISTRY_ALIAS: ecr-uda-movie-app-be-alias
-          REPOSITORY: ecr-uda-movie-app-be
+          REGISTRY_ALIAS: ${{ secrets.REPOSITORY_BE }}-alias
+          REPOSITORY: ${{ secrets.REPOSITORY_BE }}
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}

@@ -18,7 +18,7 @@ concurrency:
 # Jobs defined in the workflow           
 jobs:
   lint_and_test:
-    uses: ./.github/workflows/frontend-lint-test.yaml
+    uses: ./.github/workflows/frontend-lint-test.yml
     
   build:
     needs: lint_and_test
