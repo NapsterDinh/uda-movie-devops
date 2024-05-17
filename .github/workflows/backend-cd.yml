@@ -7,7 +7,7 @@ on:
   push:
     branches: [main]
     paths: 
-      - starter/backend
+      - starter/backend/**
     
   # Manual trigger using the workflow_dispatch event
   workflow_dispatch:

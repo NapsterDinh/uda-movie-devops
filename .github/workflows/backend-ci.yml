@@ -5,16 +5,9 @@ run-name: ${{ github.actor }} is trigger this ${{ github.workflow }}
 
 on: 
   pull_request:
-    branches: 
-      - 'main'
+    branches: [main]
     paths: 
-      - 'starter/backend/**'
-  
-  push:
-    branches:
-      - 'main'
-    paths:
-      - 'starter/backend/**'
+      - starter/backend/**
       
   # Manual trigger using the workflow_dispatch event
   workflow_dispatch:
@@ -27,4 +20,13 @@ concurrency:
 jobs:
   lint_and_test:
     uses: ./.github/workflows/backend-lint-test.yml
+  check-output:
+    needs: lint_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show output
+        run: |
+          echo ${{needs.lint_and_test.outputs}}
+
+    
   
