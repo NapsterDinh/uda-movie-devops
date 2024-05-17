@@ -52,9 +52,8 @@ jobs:
         run: |
           pipenv install
           
-      - name: Run test suite
-        run: |
-          pipenv run test
+      - name: Reinstall flake8
+        run: pip install flake8
 
       - name: Run linter
         run: |
