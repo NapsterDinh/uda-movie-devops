@@ -17,3 +17,5 @@ class Movies(MethodView):
         else:
             # Return the details of a specific movie
             return jsonify({"movie": movies[str(movie_id)]})
+
+#trigger
