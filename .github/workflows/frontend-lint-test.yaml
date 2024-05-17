@@ -15,7 +15,7 @@ on:
         description: 'Node.js version file (.nvmrc)'
         required: false
         type: string
-        default: '.npmrc'
+        default: '.nvmrc'
       working-directory:
         description: 'Working directory'
         required: false
