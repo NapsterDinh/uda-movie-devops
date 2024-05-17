@@ -17,7 +17,7 @@ on:
         required: false
         type: string
         default: starter/backend
-        
+    
 # Jobs defined in the workflow           
 jobs:
   lint:
@@ -26,8 +26,6 @@ jobs:
       run: 
         shell: bash
         working-directory: ${{ inputs.working-directory}}
-    outputs:
-      working-directory: ${{ inputs.working-directory}}
     steps:
       # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository

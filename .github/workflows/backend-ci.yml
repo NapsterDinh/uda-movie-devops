@@ -20,13 +20,9 @@ concurrency:
 jobs:
   lint_and_test:
     uses: ./.github/workflows/backend-lint-test.yml
-  check-output:
-    needs: lint_and_test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show output
-        run: |
-          echo ${{needs.lint_and_test.outputs}} | jq -R .
-
     
-  
+  test:
+    needs: lint_and_test
+    runs-on: unbuntu-latest
+    steps:
+      - run: echo ${{ needs.lint_and_test.inputs.working-directory}}
