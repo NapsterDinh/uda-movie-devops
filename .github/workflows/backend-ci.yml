@@ -8,6 +8,11 @@ on:
     branches: [main]
     paths: 
       - starter/backend
+  
+  push:
+    branches: [main]
+    paths:
+      - starter/backend
       
   # Manual trigger using the workflow_dispatch event
   workflow_dispatch:
