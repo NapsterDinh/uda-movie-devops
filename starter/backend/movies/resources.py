@@ -16,4 +16,4 @@ class Movies(MethodView):
             return jsonify({"movies": [dict({"title": movie["title"]}, **{"id": i}) for i, movie in movies.items()]})
         else:
             # Return the details of a specific movie
-            return jsonify({"movie": movies[str(movie_id)]})
+            return jsonify({"movie": movies[str(movie_id)]}) 
