@@ -38,7 +38,7 @@ jobs:
           node-version-file: 'starter/frontend/.nvmrc'
           check-latest: false
           cache: 'npm'
-          cache-dependency-path: /package-lock.json
+          cache-dependency-path: 'starter/frontend/package-lock.json'
                 
       - name: Install Dependencies
         run: npm ci
