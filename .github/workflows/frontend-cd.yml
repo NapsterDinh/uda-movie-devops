@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   lint_and_test:
-    uses: ./.github/workflows/frontend-lint-test.yml
+    uses: ./.github/workflows/frontend-lint-test.yaml
       
   build:
     needs: lint_and_test
@@ -25,7 +25,7 @@ jobs:
     defaults:
       run: 
         shell: bash
-        working-directory: ${{ needs.lint_and_test.outputs.working-directory}}
+        working-directory: 'starter/frontend'
     steps:
       # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository
@@ -55,7 +55,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
         run: |
-          aws eks update-kubeconfig --name cluster
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
           export EXTERNALIP=$(kubectl get svc backend -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}{.status.loadBalancer.ingress[0].ip}')
           echo $EXTERNALIP
     
@@ -70,7 +70,7 @@ jobs:
     defaults:
       run: 
         shell: bash
-        working-directory: ${{ needs.lint_and_test.outputs.working-directory}}
+        working-directory: 'starter/frontend'
     steps:
       # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository

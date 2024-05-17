@@ -37,7 +37,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4 
                 
-      - name: Set up nodejs ${{ inputs.node-version}}
+      - name: Set up nodejs
         uses: actions/setup-node@v4
         with: 
             node-version: ${{inputs.node-version}}
@@ -63,7 +63,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4 
                 
-      - name: Set up nodejs ${{ inputs.node-version}}
+      - name: Set up nodejs
         uses: actions/setup-node@v4
         with: 
             node-version: ${{inputs.node-version}}

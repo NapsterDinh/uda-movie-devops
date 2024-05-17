@@ -55,7 +55,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
         run: |
-          aws eks update-kubeconfig --name cluster
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
   
           echo Starting build docker process...
           docker build -t $REGISTRY:$REPOSITORY:$IMAGE_TAG .
