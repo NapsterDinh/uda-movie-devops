@@ -15,7 +15,7 @@ on:
       - starter/backend
       
   # Manual trigger using the workflow_dispatch event
-  workflow_dispatch:
+  # workflow_dispatch:
    
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
