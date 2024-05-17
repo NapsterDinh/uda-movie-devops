@@ -24,7 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run: 
-        shell: bash
         working-directory: ${{ inputs.working-directory}}
     outputs:
       working-directory: ${{ inputs.working-directory}}
