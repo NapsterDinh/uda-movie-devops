@@ -5,17 +5,19 @@ run-name: ${{ github.actor }} is trigger this ${{ github.workflow }}
 
 on: 
   pull_request:
-    branches: [main]
+    branches: 
+      - 'main'
     paths: 
-      - starter/backend
+      - 'starter/backend/**'
   
   push:
-    branches: [main]
+    branches:
+      - 'main'
     paths:
-      - starter/backend
+      - 'starter/backend/**'
       
   # Manual trigger using the workflow_dispatch event
-  # workflow_dispatch:
+  workflow_dispatch:
    
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
