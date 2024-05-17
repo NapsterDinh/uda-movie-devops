@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run: 
+        shell: bash
         working-directory: ${{ inputs.working-directory}}
     outputs:
       working-directory: ${{ inputs.working-directory}}
@@ -39,7 +40,7 @@ jobs:
 
       - name: Install pipenv
         run: |
-          python -m pip install --upgrade pipenv wheel
+          pip install pipenv
           
       - id: cache-pipenv
         uses: actions/cache@v1
@@ -51,9 +52,6 @@ jobs:
         if: steps.cache-pipenv.outputs.cache-hit != 'true'
         run: |
           pipenv install
-          
-      - name: Reinstall flake8
-        run: pip install flake8
 
       - name: Run linter
         run: |
@@ -76,7 +74,7 @@ jobs:
 
       - name: Install pipenv
         run: |
-          python -m pip install --upgrade pipenv wheel
+         pip install pipenv
           
       - id: cache-pipenv
         uses: actions/cache@v4
