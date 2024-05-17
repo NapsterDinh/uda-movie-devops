@@ -11,23 +11,29 @@ on:
     
   # Manual trigger using the workflow_dispatch event
   workflow_dispatch:
-
+    
+env: 
+  python-version: '3.10'
+  working-directory: 'starter/backend'
+  
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.head_ref || github.ref }}'
   cancel-in-progress: true    
   
 jobs:
-  lint_and_test:
-    uses: ./.github/workflows/backend-lint-test.yml
-      
   build:
-    needs: lint_and_test
     runs-on: ubuntu-latest
     defaults:
       run: 
         shell: bash
-        working-directory: ${{ needs.lint_and_test.inputs.working-directory }}
+        working-directory: ${{ env.working-directory }}
     steps:
+      - name: Lint and test
+        uses: ./.github/workflows/backend-lint-test.yml
+        with:
+          python-version: ${{ env.python-version }}
+          working-directory: ${{ env.working-directory }}
+          
       # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository
         uses: actions/checkout@v4 
@@ -57,12 +63,12 @@ jobs:
           docker push $REGISTRY:$REPOSITORY:$IMAGE_TAG
           
   deploy:
-    needs: build
+    needs: [build]
     runs-on: ubuntu-latest
     defaults:
       run: 
         shell: bash
-        working-directory: ${{ needs.lint_and_test.outputs.working-directory}}
+        working-directory: ${{ env.working-directory }}
     steps:
        # This step checks out a copy of source code in target branch of your repository
       - name: Checkout Repository
