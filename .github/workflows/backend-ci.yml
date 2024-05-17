@@ -1,0 +1,31 @@
+#Workflow name
+name: 'Backend Github Workflow CI'
+
+run-name: ${{ github.actor }} is trigger this ${{ github.workflow }}
+
+# Triggers for the workflow
+on:
+   # Manual trigger using the workflow_dispatch event
+  workflow_dispatch:
+    
+  # Automatic trigger on pull request events targeting the main branch
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+  
+  push:
+    branches: [main]
+    
+permissions:
+  contents: read
+  pull-requests: read
+  
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true    
+  
+# Jobs defined in the workflow           
+jobs:
+  lint_and_test:
+    uses: ./.github/workflows/backend-lint-test.yml
+  

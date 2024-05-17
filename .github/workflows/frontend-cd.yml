@@ -1,0 +1,92 @@
+#Workflow name
+name: 'Frontend Github Workflow CD'
+
+run-name: ${{ github.actor }} is trigger this ${{ github.workflow }}
+
+# Triggers for the workflow
+on:
+   # Manual trigger using the workflow_dispatch event
+  workflow_dispatch:
+  
+  push:
+    branches: [main]
+    
+permissions:
+  contents: read
+  pull-requests: read
+  
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true 
+
+jobs:
+  lint_and_test:
+    uses: ./.github/workflows/frontend-lint-test.yml
+      
+  build:
+    needs: lint_and_test
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        shell: bash
+        working-directory: ${{ needs.lint_and_test.outputs.working-directory}}
+    steps:
+      # This step checks out a copy of source code in target branch of your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4 
+        
+      - name: Setup AWS Credentials
+        id: setup-aws-credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-region: ${{ secrets.AWS_REGION }}
+        
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        id: build-tag-push-image
+        env:
+          AWS_ACCOUNT_ID: ${{ steps.setup-aws-credentials.outputs.aws-account-id}}
+          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          REGISTRY_ALIAS: ecr-uda-movie-app-fe-alias
+          REPOSITORY: ecr-uda-movie-app-fe
+          IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+        run: |
+          aws eks update-kubeconfig --name cluster
+          export EXTERNALIP=$(kubectl get svc backend -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}{.status.loadBalancer.ingress[0].ip}')
+          echo $EXTERNALIP
+    
+          echo Starting build docker process...
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://$EXTERNALIP -t $REGISTRY:$REPOSITORY:$IMAGE_TAG .
+          echo Completed build at date...
+          docker push $REGISTRY:$REPOSITORY:$IMAGE_TAG
+          
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        shell: bash
+        working-directory: ${{ needs.lint_and_test.outputs.working-directory}}
+    steps:
+      # This step checks out a copy of source code in target branch of your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4 
+        
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+  
+      - name: Deploy
+        run: |
+          cd k8s
+          kustomize edit set image frontend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
+          kustomize build | kubectl apply -f -
+    
+  

@@ -1,0 +1,80 @@
+#Workflow name
+name: 'Linting and testing workflow for Frontend CI'
+
+run-name: ${{ github.actor }} is trigger this ${{ github.workflow }}
+
+# Triggers for the workflow
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: 'Node.js version'
+        required: false
+        type: string
+      node-version-file:
+        description: 'Node.js version file (.nvmrc)'
+        required: false
+        type: string
+        default: '.npmrc'
+      working-directory:
+        description: 'Working directory'
+        required: false
+        type: string
+        default: starter/frontend
+                
+# Jobs defined in the workflow           
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        shell: bash
+        working-directory: ${{ inputs.working-directory}}
+    outputs:
+      working-directory: ${{ inputs.working-directory}}
+    steps:
+      # This step checks out a copy of source code in target branch of your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4 
+                
+      - name: Set up nodejs ${{ inputs.node-version}}
+        uses: actions/setup-node@v4
+        with: 
+            node-version: ${{inputs.node-version}}
+            node-version-file: ${{ inputs.node-version-file}}
+            check-latest: false
+            cache: 'npm'
+            cache-dependency-path: /package-lock.json
+                
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Linting
+        run: npm run lint
+  
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        shell: bash
+        working-directory: ${{ inputs.working-directory}}
+    steps:
+      # This step checks out a copy of source code in target branch of your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4 
+                
+      - name: Set up nodejs ${{ inputs.node-version}}
+        uses: actions/setup-node@v4
+        with: 
+            node-version: ${{inputs.node-version}}
+            node-version-file: ${{ inputs.node-version-file}}
+            check-latest: false
+            cache: 'npm'
+            cache-dependency-path: /package-lock.json
+                
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Testing
+        run: npm run test -- --coverage
+  
