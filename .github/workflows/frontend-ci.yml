@@ -35,7 +35,7 @@ jobs:
       - name: Set up nodejs
         uses: actions/setup-node@v4
         with: 
-          node-version-file: '.nvmrc'
+          node-version-file: 'starter/frontend/.nvmrc'
           check-latest: false
           cache: 'npm'
           cache-dependency-path: /package-lock.json
