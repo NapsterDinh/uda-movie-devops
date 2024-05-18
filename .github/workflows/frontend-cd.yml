@@ -79,6 +79,10 @@ jobs:
         shell: bash
         working-directory: ${{ env.working-directory }}
     steps:
+      # This step checks out a copy of source code in target branch of your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4 
+        
       - name: Setup AWS Credentials
         id: setup-aws-credentials
         uses: aws-actions/configure-aws-credentials@v4
