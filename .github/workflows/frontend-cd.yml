@@ -65,9 +65,9 @@ jobs:
           echo $EXTERNALIP
     
           echo Starting build docker process...
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://$EXTERNALIP -t $REGISTRY:$REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://$EXTERNALIP -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           echo Completed build at date...
-          docker push $REGISTRY:$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           
   deploy:
     needs: build
