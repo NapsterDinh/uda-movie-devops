@@ -12,7 +12,8 @@ export default function App() {
 
   return (
     <div className="container">
-      <h1>Napster Dinh Movie List</h1>
+      <h1>Author: Napster Dinh</h1>
+      <h1>Movie List</h1>
 
       <MovieList onMovieClick={handleMovieClick} />
 
