@@ -23,3 +23,23 @@ jobs:
     with:
       python-version: '3.10'
       working-directory: 'starter/backend'
+      
+  build:
+    needs: lint_and_test
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        shell: bash
+        working-directory: 'starter/backend'
+    steps:
+      # This step checks out a copy of source code in target branch of your repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4 
+        
+      - name: Build, tag, and push docker image to Amazon ECR
+        id: build-tag-push-image
+        env:
+          REPOSITORY: ${{ secrets.REPOSITORY_BE }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REPOSITORY:$IMAGE_TAG .
