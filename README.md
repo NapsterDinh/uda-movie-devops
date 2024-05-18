@@ -1,15 +1,13 @@
-![CI/CD](https://github.com/napsterDinh/uda-movie-picture-pipeline/workflows/Front-end%20Github%20Actions%20CI/badge.svg)
-
 # Movie Picture Pipeline
 
 You've been brought on as the DevOps resource for a development team that manages a web application that is a catalog of Movie Picture movies. They're in dire need of automating their development workflows in hopes of accelerating their release cycle. They'd like to use Github Actions to automate testing, building and deploying their applications to an existing Kubernetes cluster.
 
-The team's project is comprised of 2 application.
+The team's project is comprised of 2 applications.
 
-1. A frontend UI built written in Typescript, using the React framework
+1. A frontend UI written in Typescript, using the React framework
 2. A backend API written in Python using the Flask framework.
 
-In the `starter` folder, you'll find 2 folders, one named `frontend` and one named `backend`, where each application's source code is maintained. Your job is to use the team's [existing documentation](./starter/frontend/frontend-development-notes) and create CI/CD pipelines to meet the teams' needs.
+You'll find 2 folders, one named `frontend` and one named `backend`, where each application's source code is maintained. Your job is to use the team's [existing documentation](#frontend-development-notes) and create CI/CD pipelines to meet the teams' needs.
 
 ## Deliverables
 
@@ -51,8 +49,67 @@ In the `starter` folder, you'll find 2 folders, one named `frontend` and one nam
       1. The manifest should deploy the newly created tagged image
       2. The tag applied to the image should be the git SHA of the commit that triggered the build
 
+
 **⚠️ NOTE**
-Once you begin work on Continuous Deployment, you'll need to first setup the AWS and Kubernetes environment. Follow the [instructions below](#setting-up-continuous-deployment-environment)  instructions only when you're ready to start testing your deployments.
+Once you begin work on Continuous Deployment, you'll need to first setup the AWS and Kubernetes environment. Follow [these instructions ](#setting-up-continuous-deployment-environment) only when you're ready to start testing your deployments.
+
+## One-time setup instructions
+
+The project assumes you'll be working in the Udacity workspace where all the necessary system dependencies are installed and setup, ready for use.
+The following steps are required to be run only once to initialize and create your repository with all the files that you'll use for the project.
+### Login
+Launch the Udacity workspace and open the terminal in VSCode to start executing the following commands:
+1. Start the login process with `gh`
+```bash
+gh auth login
+```
+   2. Select `Github.com`
+   3. Select `HTTPS`
+   4. Enter `Y` or just press **Enter** to authenticate with Github credentials
+   5. Select **Login with a web browser**
+   6. Highlight and copy the one-time code then press **Enter** to open the browser
+   7. If VSCode pops-up with a warning, click **Open**
+   8. Enter your Github credentials at the login page
+      1. You may need to perform your 2FA step next
+   9. Paste in the one-time code that was given on the CLI prompt and click **Continue**
+      1. If you're prompted for authorizing access to any organizations, you don't have to do that. The `gh` cli for this course just needs to be able to create repos in your personal account.
+   10. Click authorize to allow the Github CLI to access your repository information.
+   11. You can close the Github window and go back to the Udacity workspace tab
+
+### Configuration
+Next you'll need to configure git to use your desired email.
+
+If you already know what email you'd like to use, great! If you'd like to use the `noreply` email address that Github offers, follow [these instructions](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address#setting-your-commit-email-address-on-github)
+
+**Configure git with your email address**
+```bash
+git config --global user.email "YOUR_EMAIL"
+```
+   
+Now we'll finish up by initializing the repository and using the `gh` command to push the files to a new repository under you Github account. The last command uses `udacity-build-cicd-project` as the repository name, but you can change this to be whatever you'd like that doesn't conflict with an existing repo name in your account.
+
+**Initialize the workspace as a git repository**
+```bash
+git init
+```
+   
+**Stage the workspace files for committing**
+```bash
+git add .
+```
+   
+**Commit the workspace files**
+```bash
+git commit -m "initial"
+```
+   
+**Create your public repository and push the initial changes (it needs to be public to allow Github Actions to run for free)**
+```bash
+gh repo create udacity-build-cicd-project --source=. --public --push
+```
+
+As you work on the project, you won't need to create or initialize the repo again. You'll just need to make changes to your workflows in the `.github/workflows` folder, and perform `git add .` `git commit` and `git push` commands to make the files available in your repository and view your actions in the Github Actions interface.
+
 
 ## Setting up Continuous Deployment environment
 
@@ -60,6 +117,19 @@ Only complete these steps once you've finished your Continuous Integration pipel
 
 First we need to prep the AWS account with the necessary infrastructure for deploying the frontend and backend applications. As the focus of this course is building the CI/CD pipelines, we won't be requiring you to setup all of the underlying AWS and Kubernetes infrastructure. This will be done for you with the provided Terraform and helper scripts. As there are costs associated with running this infrastucture, **REMEMBER** to destroy everything before stopping work. Everything can be recreated, and the pipeline work you'll be doing is all saved in this repository.
 
+### Export AWS Credentials from the Cloud Gateway
+To access your AWS permissions, you will need to launch the Udacity cloud gateway. Launching the gateway will both lead you to the AWS console and allow you to configure your terminal
+
+Before you can deploy an application, you will need to configure the AWS account that the Serverless framework will use.
+
+Click on the "LAUNCH CLOUD GATEWAY" button in the bottom left corner to get the AWS credentials for your session:
+Copy these values, and expose them using the environment variables in the workspace's shell:
+
+```bash
+export AWS_ACCESS_KEY_ID={copied-access-key}
+export AWS_SECRET_ACCESS_KEY={copied-secret-key}
+export AWS_SESSION_TOKEN={copied-session-token}
+```
 ### Create AWS infrastructure with Terraform
 
 1. Export your AWS credentials from the Cloud Gateway
@@ -100,7 +170,8 @@ cd setup
 ```
 
 2. The script will download a tool, add the IAM user ARN to the authentication configuration, indicate a `Done` status, then it'll remove the tool
-
+## Setup Github Secrets
+- Secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, EKS_CLUSTER_NAME, REPOSITORY_FE, REPOSITORY_BE
 ## Dependencies
 
 We've provided the below list of dependencies to assist in the case you'd like to run any of the work locally. Local development issues, however, are not supported as we cannot control the environment as we can in the online workspace.

@@ -38,6 +38,3 @@ cd setup
 ```
 
 2. The script will download a tool, add the IAM user ARN to the authentication configuration, indicate a `Done` status, then it'll remove the tool
-
-### Setup Github Secrets
-- Secrets: AWS_ACCESS_KEY_ID, AWS_REGION, EKS_CLUSTER_NAME, REPOSITORY_FE, REPOSITORY_BE
