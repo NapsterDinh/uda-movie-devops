@@ -53,7 +53,7 @@ jobs:
         id: build-tag-push-image
         env:
           AWS_ACCOUNT_ID: ${{ steps.setup-aws-credentials.outputs.aws-account-id}}
-          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REGISTRY_ALIAS: ${{ secrets.REPOSITORY_FE }}-alias
           REPOSITORY: ${{ secrets.REPOSITORY_FE }}
           IMAGE_TAG: ${{ github.sha }}
