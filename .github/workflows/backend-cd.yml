@@ -89,13 +89,17 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-
+          
       - name: Update kube config
         run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME}} --region ${{ secrets.AWS_REGION}}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
   
       - name: Deploy
         env:
-          REGISTRY: ${{ needs.build.outputs.REGISTRY }}
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ secrets.REPOSITORY_BE }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
